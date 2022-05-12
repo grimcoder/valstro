@@ -11,9 +11,9 @@ export class Message {
     id: string;
 }
 
-const useLocalStorage = (key: string, defaultValue: Message[]) : [m: Message[], a: (message: string)=>void, r: (message: string)=>void] => {
-    var bc = new BroadcastChannel('messages');
-    const [session] = getSessionId();
+var bc = new BroadcastChannel('messages');
+const useLocalStorage = (key: string, defaultValue: Message[], session: string) : [m: Message[], a: (message: string)=>void, r: (message: string)=>void] => {
+    
     function reducer(state: Message[], action: { type: string, payload?: string }): Message[] {
         // return state;
         switch (action.type) {
@@ -54,13 +54,15 @@ const useLocalStorage = (key: string, defaultValue: Message[]) : [m: Message[], 
     }, [messages, key]);
 
     function addMessage(message?: string) {
+        
+        dispatch({ type: 'ADD_MESSAGE', payload: message });
         bc.postMessage('MESSAGES_UPDATED');
-        dispatch({ type: 'ADD_MESSAGE', payload: message })
     }
 
     function removeMessage(n: string) {
+        
+        dispatch({ type: 'REMOVE_MESSAGE', payload: n });
         bc.postMessage('MESSAGES_UPDATED');
-        dispatch({ type: 'REMOVE_MESSAGE', payload: n })
     }
 
     return [messages, addMessage, removeMessage];

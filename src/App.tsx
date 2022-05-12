@@ -18,9 +18,9 @@ export const App = () => {
       padding: 5px;
     `;
 
-
-  const [storedMessages, addMessage, removeMessage] = useLocalStorage('messages', [])
-  const [session] = getSessionId();
+ const [session] = getSessionId();
+  const [storedMessages, addMessage, removeMessage] = useLocalStorage('messages', [], session)
+ 
 
   console.log(storedMessages)
 
