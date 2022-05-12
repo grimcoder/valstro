@@ -1,5 +1,6 @@
 .table {
     display: block;
+    justify-content: stretch;
     margin: 20px;
 }
 

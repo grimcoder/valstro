@@ -10,11 +10,11 @@ export const App = () => {
 
   const Row = styled.div`
       width: 100%;
-      display: table-row;
+      display: flex;
     `;
 
   const Cell = styled.div`
-      display:table-cell;
+      display:block;
       padding: 5px;
     `;
 
