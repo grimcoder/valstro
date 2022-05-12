@@ -1,14 +1,25 @@
 import { useState, useEffect, useReducer } from "react";
 import { Action } from "typesafe-actions";
+import getSessionId from "./getSessionId"
 
-const useLocalStorage = (key: string, defaultValue: string[]) : [m: string[], a: (message: string)=>void, r: (message: string)=>void] => {
+export class Message {
+    constructor(m: string, i: string){
+        this.message = m;
+        this.id = i;
+    }
+    message: string;
+    id: string;
+}
+
+const useLocalStorage = (key: string, defaultValue: Message[]) : [m: Message[], a: (message: string)=>void, r: (message: string)=>void] => {
     var bc = new BroadcastChannel('messages');
-
-    function reducer(state: string[], action: { type: string, payload?: string }): string[] {
+    const [session] = getSessionId();
+    function reducer(state: Message[], action: { type: string, payload?: string }): Message[] {
         // return state;
         switch (action.type) {
             case 'ADD_MESSAGE':
-                return [...state, action.payload || ""]
+                const newMessage = new Message(action.payload || "", session)
+                return [...state, newMessage]
                 break;
             case 'REMOVE_MESSAGE':
                 const newState = state.slice()
@@ -23,10 +34,8 @@ const useLocalStorage = (key: string, defaultValue: string[]) : [m: string[], a:
         }
     }
 
-    const [messages, dispatch] = useReducer(reducer, [], () => {
-
-        let currentValue : string[];
-
+    const [messages, dispatch] = useReducer(reducer, [], ()  => {
+        let currentValue : Message[];
         try {
             currentValue = JSON.parse(
                 localStorage.getItem(key) || String(defaultValue)
@@ -34,11 +43,8 @@ const useLocalStorage = (key: string, defaultValue: string[]) : [m: string[], a:
         } catch (error) {
             currentValue = defaultValue;
         }
-
         return currentValue;
     });
-
-
 
     useEffect(() => {
         localStorage.setItem(key, JSON.stringify(messages));

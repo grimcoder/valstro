@@ -1,39 +1,41 @@
 import { useEffect, useState, useRef } from "react";
 import React from "react";
-
+import getSessionId from "./utils/getSessionId"
 import styled from "styled-components";
 
-import useLocalStorage from "./utils/useLocalStorage";
+import useLocalStorage, {Message} from "./utils/useLocalStorage";
 import './App.css'
 
 export const App = () => {
 
   const Row = styled.div`
-      font-family: "Roboto";
+      width: 100%;
       display: table-row;
     `;
 
   const Cell = styled.div`
-      font-family: "Roboto";
       display:table-cell;
       padding: 5px;
     `;
 
 
   const [storedMessages, addMessage, removeMessage] = useLocalStorage('messages', [])
+  const [session] = getSessionId();
 
   console.log(storedMessages)
 
   const input = useRef<HTMLInputElement>(null);
-  const messages = storedMessages.map((m: string, n: number) => {
+  const messages = storedMessages.map((m: Message, n: number) => {
 
     return <Row>
-      <Cell>
-        {m}
+      <Cell className={`message ${m.id==session ? 'red' : ''}`}>
+        {m.message}
       </Cell>
-      <Cell><button onClick={() => {
+      <Cell className="remove_button">
+      
+      <i className="fa fa-times fa-lg" aria-hidden="true" onClick={() => {
         removeMessage(n.toString())
-      }}>Remove</button>
+      }}></i>
       </Cell>
     </Row>
   })
@@ -55,15 +57,17 @@ export const App = () => {
         </header>
 
         <div className="form">
-          <input ref={input} className='input' ></input><button onClick={() => {
+          <input ref={input} className='input' ></input>
+          <i className="fa fa-paper-plane fa-2x" aria-hidden="true"  onClick={() => {
 
             const newMessage = input?.current?.value;
 
             addMessage(newMessage || "")
             // setMe 
-          }}>Add message</button>
+          }}></i>
 
         </div>
+        <h2>Messages</h2>
         <div className="table">{messages}</div>
       </div>
     </div>
