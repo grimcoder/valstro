@@ -28,8 +28,8 @@ export const App = () => {
   const messages = storedMessages.map((m: Message, n: number) => {
 
     return <Row>
-      <Cell className={`message ${m.id==session ? 'red' : ''}`}>
-        {m.message}
+      <Cell className={`message `}>
+      <b>{m.id==session ? 'Sender' : 'Receiver'}</b> {m.message}
       </Cell>
       <Cell className="remove_button">
       
